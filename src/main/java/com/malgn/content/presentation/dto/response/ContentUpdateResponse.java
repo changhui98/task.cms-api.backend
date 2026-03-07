@@ -3,27 +3,22 @@ package com.malgn.content.presentation.dto.response;
 import com.malgn.content.domain.entity.Content;
 import java.time.LocalDateTime;
 
-public record ContentDetailResponse(
+public record ContentUpdateResponse(
     Long id,
     String title,
     String description,
-    Long viewCount,
-    String createdBy,
-    LocalDateTime createdAt,
-    String updatedBy,
-    LocalDateTime updatedAt
+    String lastModifiedBy,
+    LocalDateTime lastModifiedDate
 ) {
 
-    public static ContentDetailResponse from(Content content) {
-        return new ContentDetailResponse(
+    public static ContentUpdateResponse from(Content content) {
+        return new ContentUpdateResponse(
             content.getId(),
             content.getTitle(),
             content.getDescription(),
-            content.getViewCount(),
-            content.getCreatedBy(),
-            content.getCreatedDate(),
             content.getLastModifiedBy(),
             content.getLastModifiedDate()
         );
     }
+
 }

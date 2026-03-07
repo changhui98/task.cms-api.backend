@@ -6,13 +6,16 @@ import com.malgn.content.domain.entity.ContentView;
 import com.malgn.content.domain.repository.ContentRepository;
 import com.malgn.content.domain.repository.ContentViewRepository;
 import com.malgn.content.presentation.dto.request.ContentCreateRequest;
+import com.malgn.content.presentation.dto.request.ContentUpdateRequest;
 import com.malgn.content.presentation.dto.response.ContentCreateResponse;
 import com.malgn.content.presentation.dto.response.ContentDetailResponse;
 import com.malgn.content.presentation.dto.response.ContentResponse;
+import com.malgn.content.presentation.dto.response.ContentUpdateResponse;
 import com.malgn.global.configure.CustomUser;
 import com.malgn.global.exception.AppException;
 import com.malgn.member.domain.MemberErrorCode;
 import com.malgn.member.domain.entity.Member;
+import com.malgn.member.domain.entity.MemberRole;
 import com.malgn.member.domain.repository.MemberRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -82,6 +85,31 @@ public class ContentService {
 
     }
 
+    @Transactional
+    public ContentUpdateResponse updateContent(Long contentId, ContentUpdateRequest req,
+        String username, MemberRole role) {
+
+        if (req.title() == null && req.description() == null) {
+            throw new AppException(ContentErrorCode.NOTHING_TO_UPDATE);
+        }
+
+        Content content = findContent(contentId);
+        Member member = findMember(username);
+
+        validateAuthority(content, member.getUsername(), member.getRole().toString());
+
+        content.update(req.title(), req.description(), member.getUsername());
+
+        return ContentUpdateResponse.from(content);
+    }
+
+    private Content findContent(Long contentId) {
+
+        return contentRepository.findById(contentId).orElseThrow(
+            () -> new AppException(ContentErrorCode.CONTENT_NOT_FOUND)
+        );
+    }
+
     private Member findMember(String username) {
         return memberRepository.findByUsername(username).orElseThrow(
             () -> new AppException(MemberErrorCode.MEMBER_NOT_FOUND)
@@ -113,5 +141,17 @@ public class ContentService {
 
             content.increaseViewCount();
         }
+    }
+
+    private void validateAuthority(Content content, String username, String role) {
+        if ("ADMIN".equals(role)) {
+            return;
+        }
+
+        if ("USER".equals(role) && content.isOwner(username)) {
+            return;
+        }
+
+        throw new AppException(ContentErrorCode.CONTENT_UPDATE_FORBIDDEN);
     }
 }

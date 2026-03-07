@@ -44,9 +44,19 @@ public class Content extends AuditingEntity {
     }
 
     public void update(String title, String description, String username) {
-        this.title = title;
-        this.description = description;
+        if (title != null) {
+            this.title = title;
+        }
+
+        if (description != null) {
+            this.description = description;
+        }
+
         this.lastModifiedBy = username;
+    }
+
+    public boolean isOwner(String username) {
+        return this.createdBy.equalsIgnoreCase(username);
     }
 
 }
