@@ -45,15 +45,7 @@ public class ContentService {
 
         Content saveContent = contentRepository.save(content);
 
-        return new ContentCreateResponse(
-            saveContent.getId(),
-            saveContent.getTitle(),
-            saveContent.getDescription(),
-            saveContent.getCreatedDate(),
-            saveContent.getCreatedBy(),
-            saveContent.getLastModifiedDate(),
-            saveContent.getLastModifiedBy()
-        );
+        return ContentCreateResponse.from(content);
     }
 
     @Transactional(readOnly = true)
@@ -74,10 +66,7 @@ public class ContentService {
     public ContentDetailResponse getContent(Long contentId, CustomUser user) {
 
         Member member = findMember(user.getUsername());
-
-        Content content = contentRepository.findById(contentId).orElseThrow(
-            () -> new AppException(ContentErrorCode.CONTENT_NOT_FOUND)
-        );
+        Content content = findContent(contentId);
 
         increaseViewCount(content, member.getUsername());
 
