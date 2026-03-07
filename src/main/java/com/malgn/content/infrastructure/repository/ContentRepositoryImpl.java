@@ -32,4 +32,10 @@ public class ContentRepositoryImpl implements ContentRepository {
 
         return contentJpaRepository.findById(contentId);
     }
+
+    @Override
+    public void increaseViewCount(Long contentId) {
+
+        contentQueryRepository.increaseViewCount(contentId);
+    }
 }

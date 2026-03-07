@@ -126,7 +126,7 @@ public class ContentService {
             ContentView contentView = ContentView.of(content.getId(), username);
             contentViewRepository.save(contentView);
 
-            content.increaseViewCount();
+            contentRepository.increaseViewCount(content.getId());
             return;
         }
 

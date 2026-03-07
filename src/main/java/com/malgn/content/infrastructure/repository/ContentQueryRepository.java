@@ -34,4 +34,15 @@ public class ContentQueryRepository {
 
         return new PageImpl<>(contents, pageable, total);
     }
+
+    public void increaseViewCount(Long contentId) {
+
+        QContent content = QContent.content;
+
+        queryFactory
+            .update(content)
+            .set(content.viewCount, content.viewCount.add(1))
+            .where(content.id.eq(contentId))
+            .execute();
+    }
 }
