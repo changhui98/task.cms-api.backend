@@ -47,3 +47,8 @@ logging:
     root: info
     web: info
     com.malgn: debug
+
+## jwt
+jwt:
+  secret: 2f8c6a4d3e9b1f7a8c2d6e5b4a9c3f7d1e8b6c4a2f9d5e7c3b1a6d8e4f2c9a7
+  expiration: 3600000
