@@ -17,7 +17,7 @@ import org.springframework.security.web.servlet.util.matcher.PathPatternRequestM
 public class H2DbSecurityConfiguration {
 
     @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
+    @Order(1)
     public SecurityFilterChain h2DbSecurityFilterChain(HttpSecurity http) {
 
         http.securityMatcher(

@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class ActuatorSecurityConfiguration {
 
     @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
+    @Order(2)
     public SecurityFilterChain actuatorSecurityFilterChain(HttpSecurity http) {
         http.securityMatcher(EndpointRequest.toAnyEndpoint());
 
