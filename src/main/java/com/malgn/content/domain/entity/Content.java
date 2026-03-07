@@ -30,10 +30,11 @@ public class Content extends AuditingEntity {
     @Column(name = "view_count", nullable = false)
     private Long viewCount = 0L;
 
-    public static Content of(String title, String description) {
+    public static Content of(String title, String description, String username) {
         Content content = new Content();
         content.title = title;
         content.description = description;
+        content.createdBy = username;
         return content;
     }
 
