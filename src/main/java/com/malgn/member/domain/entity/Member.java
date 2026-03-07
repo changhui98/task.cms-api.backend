@@ -24,7 +24,7 @@ public class Member extends BaseEntity {
     private Long id;
 
     @Column(nullable = false, length = 50)
-    private String name;
+    private String username;
 
     @Column(nullable = false)
     private String password;
@@ -33,9 +33,9 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
-    public static Member of(String name, String password) {
+    public static Member of(String username, String password) {
         Member member = new Member();
-        member.name = name;
+        member.username = username;
         member.password = password;
         member.role = MemberRole.USER;
         return member;
