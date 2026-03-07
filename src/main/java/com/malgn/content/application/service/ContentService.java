@@ -68,6 +68,10 @@ public class ContentService {
         Member member = findMember(user.getUsername());
         Content content = findContent(contentId);
 
+        if (content.isDeleted() && !isAdmin(member)) {
+            throw new AppException(ContentErrorCode.CONTENT_NOT_FOUND);
+        }
+
         increaseViewCount(content, member.getUsername());
 
         return ContentDetailResponse.from(content);
@@ -83,6 +87,11 @@ public class ContentService {
         }
 
         Content content = findContent(contentId);
+
+        if (content.isDeleted()) {
+            throw new AppException(ContentErrorCode.CONTENT_NOT_FOUND);
+        }
+
         Member member = findMember(username);
 
         validateAuthority(content, member.getUsername(), member.getRole().toString());
@@ -90,6 +99,21 @@ public class ContentService {
         content.update(req.title(), req.description(), member.getUsername());
 
         return ContentUpdateResponse.from(content);
+    }
+
+    @Transactional
+    public void deleteContent(Long contentId, String username, MemberRole role) {
+
+        Content content = findContent(contentId);
+        Member member = findMember(username);
+
+        if (content.isDeleted()) {
+            throw new AppException(ContentErrorCode.CONTENT_NOT_FOUND);
+        }
+
+        validateAuthority(content, member.getUsername(), member.getRole().toString());
+
+        content.deleteBy(member);
     }
 
     private Content findContent(Long contentId) {
@@ -130,6 +154,11 @@ public class ContentService {
 
             content.increaseViewCount();
         }
+    }
+
+    private boolean isAdmin(Member member) {
+
+        return member.getRole().equals(MemberRole.ADMIN);
     }
 
     private void validateAuthority(Content content, String username, String role) {

@@ -3,6 +3,7 @@ package com.malgn.global.entity;
 import com.malgn.member.domain.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -23,6 +24,7 @@ public abstract class AuditingEntity extends BaseEntity{
     protected String deletedBy;
 
     public void deleteBy(Member member) {
+        this.deletedDate = LocalDateTime.now();
         this.deletedBy = member.getUsername();
     }
 }

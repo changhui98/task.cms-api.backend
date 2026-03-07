@@ -22,6 +22,7 @@ public class ContentQueryRepository {
 
         List<Content> contents = queryFactory
             .selectFrom(content)
+            .where(content.deletedDate.isNull())
             .orderBy(content.createdDate.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
@@ -30,6 +31,7 @@ public class ContentQueryRepository {
         Long total = queryFactory
             .select(content.count())
             .from(content)
+            .where(content.deletedDate.isNull())
             .fetchOne();
 
         return new PageImpl<>(contents, pageable, total);
