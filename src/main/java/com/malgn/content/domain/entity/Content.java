@@ -35,7 +35,18 @@ public class Content extends AuditingEntity {
         content.title = title;
         content.description = description;
         content.createdBy = username;
+        content.lastModifiedBy = username;
         return content;
+    }
+
+    public void increaseViewCount() {
+        this.viewCount++;
+    }
+
+    public void update(String title, String description, String username) {
+        this.title = title;
+        this.description = description;
+        this.lastModifiedBy = username;
     }
 
 }

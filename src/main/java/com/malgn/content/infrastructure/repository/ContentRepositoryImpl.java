@@ -2,6 +2,7 @@ package com.malgn.content.infrastructure.repository;
 
 import com.malgn.content.domain.entity.Content;
 import com.malgn.content.domain.repository.ContentRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,5 +25,11 @@ public class ContentRepositoryImpl implements ContentRepository {
     public Page<Content> findAllContents(Pageable pageable) {
 
         return contentQueryRepository.findAllContents(pageable);
+    }
+
+    @Override
+    public Optional<Content> findById(Long contentId) {
+
+        return contentJpaRepository.findById(contentId);
     }
 }

@@ -13,6 +13,15 @@ create table contents
     deleted_by         varchar(50)
 );
 
+create table content_views
+(
+    id                 bigint primary key auto_increment,
+    content_id         bigint                  not null,
+    username           varchar(50)             not null,
+    viewed_at          timestamp               not null,
+    constraint uq_content_views_content_user unique (content_id, username)
+);
+
 create table members
 (
     id                 bigint primary key      not null auto_increment,
