@@ -1,91 +1,278 @@
-# 2026 신입 Back-End 개발자 코딩 과제 - 간단한 CMS REST API
+# CMS REST API
 
-2026년도 신입 Back-End 개발자 코딩 과제입니다.
-간단한 CMS(Contents Management System) REST API 를 구현하는 것이 목표입니다.
+도메인 중심 설계를 위해 DDD(Domain Driven Design) 4계층 아키텍처를 적용하였으며
+데이터 접근 계층에서는 JPA와 QueryDSL의 역할을 분리하여 유지보수성과 확장성을 고려했습니다.
 
-외부 자료 검색 및 AI 도구 사용을 허용합니다. 다만, 제출물에 활용한 도구와 방식을 간단하게 명시해주시기 바랍니다.
+또한 인증/인가 기능은 Spring Security + JWT 기반 인증 구조로 구현하였으며
+로그인 요청은 Controller가 아닌 Security Filter에서 처리하도록 설계했습니다.
 
-## Spec
+<br>
 
+# ⚙️ 기술 스택
 - Java 25
-- Spring Boot 4
+- Spring Boot 4.0.3
 - Spring Security
-- JPA
-- H2 (db)
-- Lombok (필요시)
+- Spring Data JPA
+- QueryDSL
+- H2 Database
+- Lombok
+- Jwt
 
-## 과제 목표
+<br>
 
-- 간단한 CMS 콘텐츠 관리 API 를 구현 해주세요.
-- DB Schema 모두 구현해주세요.
-- DB 는 h2 를 사용해주세요.
-- 가능한 예외처리도 구현해주세요.
-- 필요하다고 생각되는 부분은 추가로 구현해도 됩니다.
+# 🧩 프로젝트 실행 방법
 
-## 데이터 모델
-
-### Contents
-
-| 컬럼명                | 이름  | 설명          | 데이터 타입                      | 비고 |
-|--------------------|-----|-------------|-----------------------------|----|
-| id                 | 아이디 | 고유 아이디      | bigint primary key not null |    |
-| title              | 제목  | contents 제목 | varchar(100) not null       |    |
-| description        | 내용  | contents 내용 | text                        |    |
-| view_count         | 조회수 | 조회수         | bigint not null             |    |
-| created_date       | 생성일 | 생성한 날짜      | timestamp                   |    |
-| created_by         | 생성자 | 생성한 사용자     | varchar(50) not null        |    |
-| last_modified_date | 수정일 | 마지막 수정일     | timestamp                   |    |
-| last_modified_by   | 수정자 | 마지막 수정한 사용자 | varchar(50)                 |    |
-
-## 구현 기능
-
-### 콘텐츠 관련 CRUD
-
-시스템에 등록된 콘텐츠에 대한 CRUD 를 필수로 구현해주세요.
-
-#### 기능
-- 콘텐츠 추가
-- 콘텐츠 목록 조회
-  - 반드시 페이징 처리를 해주세요.
-- 콘텐츠 상세 조회
-- 콘텐츠 수정
-- 콘텐츠 삭제
+### 프로젝트 실행
+```
+./gradlew bootRun
 
 
-### 로그인
-- Spring Security 를 이용해서 로그인을 필수로 구현해주세요.
-- 로그인 방식은 자유롭게 선택하여 구현하되, `README.md` 에 명시해주세요
-- Role
-    - 관리자(ADMIN)
-    - 사용자(USER)
+./gradlew build
+java -jar build/libs/*.jar
+```
+### H2 Console 접속
+```
+http://localhost:8080/h2-console.html
+```
 
-### 접근 권한
-
-- 접근 권한을 필수로 구현해주세요.
-- 콘텐츠 생성자 본인만 수정 + 삭제 가능하게 구현해주세요.
-- 단, 관리자(ADMIN) 인 경우 모든 콘텐츠에 대해 수정 + 삭제할 수 있게 구현해주세요.
-
-## 제출
-
-### 기한
-
-- 본 메일 수신 후 26.03.09(월) 오후 3시까지 (주)맑은기술 채용 메일(recruit@malgn.com) 로 보내주시기 바랍니다. 
-
-### 제출물
-
-- 소스코드 (Zip 또는 Github repository 링크)
-- README.md
-    - 추가 내용이나 제출물 관련 내용을 추가헤주세요.
-    - 사용한 AI 또는 참고 자료가 있다면 간단히 명시
-- REST API Docs
-    - 자유롭게 작성해서 첨부해주세요.
+### 초기 데이터
+| 아이디 | 비밀번호 | 권한 |
+| --- | --- | --- |
+| admin | test1234 | ADMIN |
+| user | test1234 | USER |
 
 
+<br>
+
+# 🔧 Package Structure
+Domain Driven Design(DDD) 기반 4계층 아키텍처를 적용하여 설계하였습니다.
+
+도메인 중심으로 패키지를 분리하고, 각 계층의 역할을 명확히 구분하여 비즈니스 로직의 응집도를 높이고 기술 의존성을 분리 하는 것을 목표로 잡았습니다.
+
+DDD 구조를 적용함으로써 다음과 같은 장점을 얻을 수 있습니다.
+- **비즈니스 로직을 도메인 중심으로 관리** 가능
+- **기술 구현(JPA, QueryDSL등)과 도메인 로직 분리**
+- 서비스 확장 시 **변경 영향 범위 최소화**
+
+프로젝트는 Presentation -> Application -> Domain -> Infrastructure 의 4계층 구조로 구성했습니다.
+
+| Layer | 역할 |
+| --- | --- | 
+| Presentation | Controller, Request/Response DTO |
+| Application| Service, 트랜잭션 관리 |
+| Domaion | Entity, Repository Interface, ErrorCode | 
+| Infrastructure | JPA, QueryDSL, Repository 구현|
+
+### Repository 설계
+Repository 는 도메인 의존성을 낮추기 위해 역할별로 분리했습니다.
+
+**<u>Domain Repository</u>**
+```
+# 도메인 계층에서 필요한 기능만 인터페이스로 정의
+ContentRepository
+```
+
+<u>**Infrastructure Repository**</u>
+```
+ContentJpaRepository     # Spring Data JPA 기반 기본 CRUD 및 단순 조회
+ContentQueryRepository   # 동적 조건 조회, 페이징, 복잡한 조회 
+ContentRepositoryImpl    # 도메인 Repository 인터페이스를 구현하며 JPA, QueryDSL를 조합하여 실제 데이터 접근을 수행
+```
+
+#### 이렇게 분리한 이유
+> - 도메인 계층이 Spring Data JPA에 직접 의존하지 않도록 하기 위해,
+> - 기술 구현(JPA/QueryDSL)을 인프라 계층으로 분리하기 위해
+> - 단순 CRUD와 복잡 조회의 책임을 나누기 위해
+> - 유지보수 시 변경 범위를 줄이기 위해
 
 
+### Package
 
+```
+src/main/java
+└── com
+    └── malgn
+        ├── Application.java
+        ├── content
+        │   ├── application
+        │   │   └── service
+        │   │       └── ContentService.java
+        │   ├── domain
+        │   │   ├── ContentErrorCode.java
+        │   │   ├── entity
+        │   │   │   ├── Content.java
+        │   │   │   └── ContentView.java
+        │   │   └── repository
+        │   │       ├── ContentRepository.java
+        │   │       └── ContentViewRepository.java
+        │   ├── infrastructure
+        │   │   └── repository
+        │   │       ├── ContentJpaRepository.java
+        │   │       ├── ContentQueryRepository.java
+        │   │       ├── ContentRepositoryImpl.java
+        │   │       ├── ContentViewJpaRepository.java
+        │   │       ├── ContentViewQueryRepository.java
+        │   │       └── ContentViewRepositoryImpl.java
+        │   └── presentation
+        │       ├── controller
+        │       │   └── ContentController.java
+        │       └── dto
+        │           ├── request
+        │           │   ├── ContentCreateRequest.java
+        │           │   └── ContentUpdateRequest.java
+        │           └── response
+        │               ├── ContentCreateResponse.java
+        │               ├── ContentDetailResponse.java
+        │               ├── ContentResponse.java
+        │               └── ContentUpdateResponse.java
+        ├── global
+        │   ├── configure
+        │   │   ├── AppConfiguration.java
+        │   │   ├── CustomUser.java
+        │   │   ├── CustomUserDetailsService.java
+        │   │   ├── JpaAuditingConfig.java
+        │   │   ├── QueryDslConfig.java
+        │   │   ├── SecurityAuditorAware.java
+        │   │   └── SwaggerConfig.java
+        │   ├── entity
+        │   │   ├── AuditingEntity.java
+        │   │   └── BaseEntity.java
+        │   ├── exception
+        │   │   ├── ApiErrorCode.java
+        │   │   ├── ApiResponse.java
+        │   │   ├── AppException.java
+        │   │   ├── ErrorCode.java
+        │   │   ├── ErrorResponse.java
+        │   │   └── GlobalExceptionHandler.java
+        │   └── security
+        │       ├── ActuatorSecurityConfiguration.java
+        │       ├── AuthenticationFilter.java
+        │       ├── FromLoginRequest.java
+        │       ├── H2DbSecurityConfiguration.java
+        │       ├── jwt
+        │       │   ├── JsonAccessDeniedHandler.java
+        │       │   ├── JsonAuthenticationEntryPoint.java
+        │       │   ├── JwtAuthenticationFilter.java
+        │       │   └── JwtTokenProvider.java
+        │       ├── SecurityAuditorAware.java
+        │       └── SecurityConfiguration.java
+        └── member
+            ├── application
+            │   └── service
+            │       └── AuthService.java
+            ├── domain
+            │   ├── entity
+            │   │   ├── Member.java
+            │   │   └── MemberRole.java
+            │   ├── MemberErrorCode.java
+            │   └── repository
+            │       └── MemberRepository.java
+            ├── infrastructure
+            │   └── repository
+            │       ├── MemberJpaRepository.java
+            │       ├── MemberQueryRepository.java
+            │       └── MemberRepositoryImpl.java
+            └── presentation
+                ├── controller
+                │   ├── AuthController.java
+                │   └── MemberController.java
+                └── dto
+                    ├── request
+                    │   └── MemberCreateRequest.java
+                    └── response
+                        └── MemberCreateResponse.java
+```
 
+<br>
 
+# 🔑 인증 / 인가
+- JWT 기반 Stateless 인증 방식을 사용합니다.
+- Spring Security 의 인증 흐름을 활용하기 위해 로그인 요청을 Controller가 아닌 Filter에서 처리하도록 설계했습니다.
 
+### 인증 API
+| 기능 | Method | Endpoint |
+| --- | --- | --- |
+| 회원가입 | POST | api/v1/auth/sign-up |
+| 로그인 | POST | api/v1/auth/sign-in |
 
+### 인증 처리 흐름
 
+**회원 가입**
+```
+Client
+ ↓
+AuthController
+ ↓
+AuthService
+ ↓
+MemberRepository
+ ↓
+DB
+```
+
+**로그인(Filter 기반 인증)**
+```
+Client
+ ↓
+Security Filter Chain
+ ↓
+Authentication Filter
+ ↓
+AuthenticationManager
+ ↓
+UserDetailsService
+ ↓
+DB
+```
+
+### JWT 인증 흐름
+로그인 이후 요청은 JWT 토큰 기반으로 인증됩니다.
+```
+Client
+ ↓
+API Request + JWT
+ ↓
+JWT Filter
+ ↓
+토큰 검증
+ ↓
+SecurityContext 인증 저장
+ ↓
+Controller
+```
+
+**인증 과정**
+
+1.  사용자가 로그인하면 서버가 JWT토큰을 발급합니다.
+2. 이후 API 요청 시 HTTP Header에 토큰을 포함합니다.
+
+```
+Authorization: Bearer {JWT}
+```
+
+3. JWT Filter에서 토큰을 검증합니다.
+4. 검증이 성공하면 SecurityContext에 인증 정보를 저장합니다.
+5. 인증된 사용자로 Controller 로직이 실행됩니다.
+
+### 보안 적용 사항
+- Spring Security 기반 인증 처리
+- JWT 토큰 기반 Stateless 인증 방식
+- 비밀번호 BCryptPasswordEncoder 암호화 저장
+- Security Filter Chain을 통한 인증 처리
+
+<br>
+
+# 📒 API Docs
+
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
+<br>
+
+# 👤 AI & Reference
+ChatGPT 5.3 | 설계 방향성 확인 및 기존 코드 리팩토링
+
+delivery-management https://github.com/E-driven-idle/delivery-management | Reference
+
+gabojago-logistics https://github.com/GBG-Gaboja-Go/gabojago-logistics | Reference
