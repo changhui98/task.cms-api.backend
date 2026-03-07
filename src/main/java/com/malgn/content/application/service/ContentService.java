@@ -67,7 +67,7 @@ public class ContentService {
             .map(ContentResponse::from);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ContentDetailResponse getContent(Long contentId, CustomUser user) {
 
         Member member = findMember(user.getUsername());
