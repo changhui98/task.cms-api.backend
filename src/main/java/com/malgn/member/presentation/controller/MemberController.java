@@ -8,9 +8,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/members")
 public class MemberController {
 
-    @GetMapping("/api-test")
-    public String test() {
-        return "success";
-    }
 
 }

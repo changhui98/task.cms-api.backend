@@ -30,11 +30,7 @@ public class AuthService {
 
         Member saveMember = memberRepository.save(member);
 
-        return new MemberCreateResponse(
-            saveMember.getId(),
-            saveMember.getUsername(),
-            saveMember.getCreatedDate()
-        );
+        return MemberCreateResponse.from(saveMember);
     }
 
     private void validateDuplicateUsername(String username) {
