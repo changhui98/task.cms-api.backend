@@ -27,19 +27,22 @@ public class SecurityConfiguration {
     private final ObjectMapper objectMapper;
 
     @Bean
-    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration cfg) throws Exception {
+    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration cfg)
+        throws Exception {
         return cfg.getAuthenticationManager();
     }
 
     @Bean
-    public AuthenticationFilter authenticationFilter(AuthenticationManager authenticationManagerBean){
+    public AuthenticationFilter authenticationFilter(
+        AuthenticationManager authenticationManagerBean) {
         AuthenticationFilter filter = new AuthenticationFilter(jwtTokenProvider, objectMapper);
         filter.setAuthenticationManager(authenticationManagerBean);
         return filter;
     }
 
     @Bean
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, AuthenticationFilter authenticationFilter) throws Exception {
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
+        AuthenticationFilter authenticationFilter) throws Exception {
 
         http
             .sessionManagement(session ->
@@ -51,6 +54,10 @@ public class SecurityConfiguration {
 
             .authorizeHttpRequests(auth ->
                 auth.requestMatchers("/api/v1/auth/**").permitAll()
+                    .requestMatchers(
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html").permitAll()
                     .anyRequest().authenticated())
 
             .exceptionHandling(e -> e
