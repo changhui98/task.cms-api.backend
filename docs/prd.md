@@ -1,4 +1,4 @@
-## 기본 요구사항
+## 🐾 기본 요구사항
 
 - 콘텐츠 추가
 - 콘텐츠 목록 조회(반드시 페이징)
@@ -8,7 +8,7 @@
 
 <br>
 
-## 추가기능
+## 🐾 추가기능
 
 - 콘텐츠 목록 조회 (관리자)
 - 콘텐츠 조회수 증가
@@ -23,7 +23,7 @@
 
 <br>
 
-## MEMBER (회원)
+## 🐾 MEMBER (회원)
 
 **회원가입**
 
@@ -42,7 +42,7 @@
 
 <br>
 
-## CONTENT (콘텐츠)
+## 🐾 CONTENT (콘텐츠)
 
 **접근 권한**
 
@@ -87,3 +87,80 @@ Base Entity 필드
 - deletedBy : 삭제한 사용자
 
 이 필드를 기준으로 삭제 여부를 판단합니다.
+
+<br>
+
+## 🚦 HTTP Status Codes
+
+| Status | Description |
+|------|-------------|
+| 200 | 요청 성공 |
+| 201 | 리소스 생성 성공 |
+| 400 | 잘못된 요청 |
+| 401 | 인증 필요 |
+| 403 | 권한 없음 |
+| 404 | 리소스 없음 |
+| 409 | 중복 데이터 |
+| 500 | 서버 내부 오류 |
+
+<br>
+
+## ⚠️ ErrorCode Enum
+
+프로젝트에서는 예외 상황을 Enum 기반으로 관리하여 일관된 에러 응답을 반환하도록 설계했습니다.
+
+ErrorCode는 다음 정보를 포함합니다.
+- HttpStatus
+- 에러 코드
+- 사용자에게 전달할 메시지
+
+```
+public enum ErrorCode {
+
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "존재하지 않는 사용자입니다."),
+    DUPLICATE_USERNAME(HttpStatus.CONFLICT, "DUPLICATE_USERNAME", "이미 존재하는 아이디입니다.");
+
+    private final HttpStatus status;
+    private final String code;
+    private final String message;
+}
+```
+이 구조를 통해 다음과 같은 목차들이 가능했습니다.
+- 에러 메시지를 중앙에서 관리
+- 서비스 코드에서 일관된 예외 처리 가능
+- API 응답 형식을 통일
+
+<br>
+
+## 🛠 Global Exception Handling
+
+프로젝트에서는 @RestControllerAdvice를 사용하여 전역 예외 처리를 구현했습니다.
+
+이를 통해 서비스 계층에서 발생한 예외를 일관된 API 응답 형식으로 변환합니다.
+
+```
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(AppException.class)
+    public ResponseEntity<ApiResponse> handleUserException(AppException e) {
+
+        ErrorCode errorCode = e.getErrorCode();
+
+        ApiResponse response = new ApiResponse(
+            errorCode.getCode(),
+            errorCode.getMessage()
+        );
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+}
+```
+
+이 구조의 장점
+
+- Controller 에서 try - catch 제거
+- 예외 처리 로직 중앙 집중화
+- API 응답 형식 일관성 유지
+
+- - - 

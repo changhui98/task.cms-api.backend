@@ -116,7 +116,9 @@ RESPONSE
 
 ```
 
-**콘텐츠 목록 조회 :: GET /api/v1/contents?page=0&size=5**
+**콘텐츠 목록 조회(삭제된 게시글 조회 X) :: GET /api/v1/contents?page=0&size=5**
+
+**콘텐츠 목록 조회(삭제된 게시글 조회 O) :: GET /api/v1/contents/admin?page=0&size=5**
 
 ```
 QUERY PARAMETERS

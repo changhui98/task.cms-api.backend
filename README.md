@@ -1,5 +1,7 @@
 # CMS REST API
 
+## 🌈 Project Overview
+
 해당 프로젝트는 Spring Boot 기반 REST API 서버로, 사용자 인증을 포함한 간단한 콘텐츠 관리 기능을 구현한 백엔드 서비스입니다.
 
 프로젝트 설계 과정에서 유지보수성과 확장성을 고려하여 DDD 기반 4계층 아키텍처를 적용하였으며,
@@ -16,9 +18,21 @@
 - JPA + QueryDSL 을 활용한 데이터 조회 구조 설계
 - 콘텐츠 조회 성능 및 유지보수성을 고려한 Repository 구조 설계
 
+**바로 가기**
+
+1. [⚙️ Tech Stack](#-tech-stack)
+2. [🧩 프로젝트 실행 방법](#-프로젝트-실행-방법)
+3. [🔧 Package Structure](#-package-structure)
+4. [🔑 인증 / 인가](#-인증--인가)
+5. [📒 API & PRD Docs](#-api--prd-docs)
+6. [👤 AI & Reference](#-ai--reference)
+
+- - -
+
 <br>
 
-# ⚙️ 기술 스택
+## ⚙️ Tech Stack
+
 - Java 25
 - Spring Boot 4.0.3
 - Spring Security
@@ -28,9 +42,11 @@
 - Lombok
 - Jwt
 
+- - -
+
 <br>
 
-# 🧩 프로젝트 실행 방법
+## 🧩 프로젝트 실행 방법
 
 ### 프로젝트 실행
 ```
@@ -51,10 +67,11 @@ http://localhost:8080/h2-console.html
 | admin | test1234 | ADMIN |
 | user | test1234 | USER |
 
+- - -
 
 <br>
 
-# 🔧 Package Structure
+## 🔧 Package Structure
 Domain Driven Design(DDD) 기반 4계층 아키텍처를 적용하여 설계하였습니다.
 
 도메인 중심으로 패키지를 분리하고, 각 계층의 역할을 명확히 구분하여 비즈니스 로직의 응집도를 높이고 기술 의존성을 분리 하는 것을 목표로 잡았습니다.
@@ -93,7 +110,9 @@ ContentRepositoryImpl    # 도메인 Repository 인터페이스를 구현하며 
 > - 도메인 계층이 Spring Data JPA에 직접 의존하지 않도록 하기 위해,
 > - 기술 구현(JPA/QueryDSL)을 인프라 계층으로 분리하기 위해
 > - 단순 CRUD와 복잡 조회의 책임을 나누기 위해
-> - 유지보수 시 변경 범위를 줄이기 위해
+> - 데이터 접근 기술이 변경되더라도 Domain 계층에 영향을 주지 않도록 하기 위해
+> - 조회 로직(QueryDSL) 변경 시 Service나 Domain 로직 수정 없이 Repository 구현만 수정하도록 하기 위해
+> - 복잡한 쿼리를 별도 Repository로 분리하여 코드 가독성과 유지보수성을 높이기 위해
 
 
 ### Package
@@ -193,9 +212,11 @@ src/main/java
                         └── MemberCreateResponse.java
 ```
 
+- - -
+
 <br>
 
-# 🔑 인증 / 인가
+## 🔑 인증 / 인가
 - JWT 기반 Stateless 인증 방식을 사용합니다.
 - Spring Security 의 인증 흐름을 활용하기 위해 로그인 요청을 Controller가 아닌 Filter에서 처리하도록 설계했습니다.
 
@@ -277,20 +298,21 @@ Authorization: Bearer {JWT}
 - 비밀번호 BCryptPasswordEncoder 암호화 저장
 - Security Filter Chain을 통한 인증 처리
 
+- - -
+
 <br>
 
-# 📒 API & PRD Docs
+## 📒 API & PRD Docs
 
 [[🍏 CLICK ] Application Programming Interface](https://github.com/changhui98/task.cms-api.backend/blob/main/docs/api-docs.md)
 
 [[🍎 CLICK ] Product Requirement Document](https://github.com/changhui98/task.cms-api.backend/blob/main/docs/prd.md)
 
-
-
+- - -
 
 <br>
 
-# 👤 AI & Reference
+## 👤 AI & Reference
 ChatGPT 5.3 | 설계 방향성 확인 및 기존 코드 리팩토링
 
 delivery-management https://github.com/E-driven-idle/delivery-management | Reference
