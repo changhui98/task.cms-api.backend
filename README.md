@@ -281,7 +281,10 @@ Authorization: Bearer {JWT}
 
 # 📒 API & PRD Docs
 
-[API Docs Click Me !](https://github.com/changhui98/task.cms-api.backend/blob/main/docs/api-docs.md)
+[[🍏 CLICK ] Application Programming Interface](https://github.com/changhui98/task.cms-api.backend/blob/main/docs/api-docs.md)
+
+[[🍎 CLICK ] Product Requirement Document](https://github.com/changhui98/task.cms-api.backend/blob/main/docs/prd.md)
+
 
 
 
