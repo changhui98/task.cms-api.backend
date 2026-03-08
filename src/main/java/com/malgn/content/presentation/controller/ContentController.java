@@ -75,6 +75,6 @@ public class ContentController {
         @AuthenticationPrincipal CustomUser user
     ) {
         contentService.deleteContent(contentId, user.getUsername(), user.getRole());
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
