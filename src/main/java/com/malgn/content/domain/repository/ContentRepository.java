@@ -15,4 +15,5 @@ public interface ContentRepository {
 
     void increaseViewCount(Long contentId);
 
+    Page<Content> findAllContentsForAdmin(Pageable pageable);
 }

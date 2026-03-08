@@ -37,6 +37,25 @@ public class ContentQueryRepository {
         return new PageImpl<>(contents, pageable, total);
     }
 
+    public Page<Content> findAllContentsForAdmin(Pageable pageable) {
+
+        QContent content = QContent.content;
+
+        List<Content> contents = queryFactory
+            .selectFrom(content)
+            .orderBy(content.createdDate.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+        Long total = queryFactory
+            .select(content.count())
+            .from(content)
+            .fetchOne();
+
+        return new PageImpl<>(contents, pageable, total);
+    }
+
     public void increaseViewCount(Long contentId) {
 
         QContent content = QContent.content;

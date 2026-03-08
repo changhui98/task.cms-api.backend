@@ -28,6 +28,12 @@ public class ContentRepositoryImpl implements ContentRepository {
     }
 
     @Override
+    public Page<Content> findAllContentsForAdmin(Pageable pageable) {
+
+        return contentQueryRepository.findAllContentsForAdmin(pageable);
+    }
+
+    @Override
     public Optional<Content> findById(Long contentId) {
 
         return contentJpaRepository.findById(contentId);

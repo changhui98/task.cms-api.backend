@@ -9,9 +9,11 @@ import com.malgn.content.presentation.dto.request.ContentCreateRequest;
 import com.malgn.content.presentation.dto.request.ContentUpdateRequest;
 import com.malgn.content.presentation.dto.response.ContentCreateResponse;
 import com.malgn.content.presentation.dto.response.ContentDetailResponse;
+import com.malgn.content.presentation.dto.response.ContentForAdminResponse;
 import com.malgn.content.presentation.dto.response.ContentResponse;
 import com.malgn.content.presentation.dto.response.ContentUpdateResponse;
 import com.malgn.global.configure.CustomUser;
+import com.malgn.global.exception.ApiErrorCode;
 import com.malgn.global.exception.AppException;
 import com.malgn.member.domain.MemberErrorCode;
 import com.malgn.member.domain.entity.Member;
@@ -60,6 +62,20 @@ public class ContentService {
         return contentRepository
             .findAllContents(pageable)
             .map(ContentResponse::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ContentForAdminResponse> getContentsByAdmin(int page, int size) {
+
+        Pageable pageable = PageRequest.of(
+            page,
+            size,
+            Sort.by(Direction.DESC, "createdDate")
+        );
+
+        return contentRepository
+            .findAllContentsForAdmin(pageable)
+            .map(ContentForAdminResponse::from);
     }
 
     @Transactional

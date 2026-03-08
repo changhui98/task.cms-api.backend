@@ -5,6 +5,7 @@ import com.malgn.content.presentation.dto.request.ContentCreateRequest;
 import com.malgn.content.presentation.dto.request.ContentUpdateRequest;
 import com.malgn.content.presentation.dto.response.ContentCreateResponse;
 import com.malgn.content.presentation.dto.response.ContentDetailResponse;
+import com.malgn.content.presentation.dto.response.ContentForAdminResponse;
 import com.malgn.content.presentation.dto.response.ContentResponse;
 import com.malgn.content.presentation.dto.response.ContentUpdateResponse;
 import com.malgn.global.configure.CustomUser;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,8 +42,18 @@ public class ContentController {
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<ContentForAdminResponse>> getContentsByAdmin(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<ContentForAdminResponse> res = contentService.getContentsByAdmin(page, size);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
     @GetMapping("/{contentId}")
-    public ResponseEntity<ContentDetailResponse> getContent(
+    public ResponseEntity<ContentDetailResponse> getContentDetail(
         @PathVariable Long contentId,
         @AuthenticationPrincipal CustomUser user
     ) {
