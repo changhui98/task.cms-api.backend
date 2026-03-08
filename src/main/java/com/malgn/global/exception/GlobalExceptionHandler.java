@@ -1,7 +1,9 @@
 package com.malgn.global.exception;
 
+import java.nio.file.AccessDeniedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -10,19 +12,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AppException.class)
-    public ResponseEntity<ApiResponse> handleUserException(AppException e) {
+    public ResponseEntity<ErrorResponse> handleUserException(AppException e) {
         ErrorCode errorCode = e.getErrorCode();
 
-        ApiResponse response = new ApiResponse(
-            errorCode.getCode(),
-            errorCode.getMessage()
-        );
-
-        return new ResponseEntity<>(response, errorCode.getStatus());
+        return ResponseEntity
+            .status(errorCode.getStatus())
+            .body(ErrorResponse.from(errorCode));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidationException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
 
         String message = e.getBindingResult()
             .getFieldErrors()
@@ -34,15 +33,29 @@ public class GlobalExceptionHandler {
             .body(new ErrorResponse("VALIDATION_ERROR", message, null));
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
+
+        return ResponseEntity
+            .status(HttpStatus.FORBIDDEN)
+            .body(ErrorResponse.from(ApiErrorCode.FORBIDDEN));
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorizationDeniedException(
+        AuthorizationDeniedException e
+    ) {
+        return ResponseEntity
+            .status(HttpStatus.FORBIDDEN)
+            .body(ErrorResponse.from(ApiErrorCode.FORBIDDEN));
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse> handleException(Exception e) {
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
 
-        ApiResponse response = new ApiResponse(
-            "INTERNAL_SERVER_ERROR",
-            "서버 내부 오류가 발생했습니다."
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ErrorResponse.from(ApiErrorCode.INTERNAL_SERVER_ERROR));
     }
 
 }
