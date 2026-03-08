@@ -4,6 +4,7 @@ import com.malgn.member.application.service.AuthService;
 import com.malgn.member.presentation.dto.request.MemberCreateRequest;
 import com.malgn.member.presentation.dto.response.MemberCreateResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,7 @@ public class AuthController {
     )
     @PostMapping("/sign-up")
     public ResponseEntity<MemberCreateResponse> signUp(
-        @RequestBody MemberCreateRequest request
+        @RequestBody @Valid MemberCreateRequest request
     ) {
         MemberCreateResponse res = authService.signUp(request);
 

@@ -8,6 +8,7 @@ import com.malgn.content.presentation.dto.response.ContentDetailResponse;
 import com.malgn.content.presentation.dto.response.ContentResponse;
 import com.malgn.content.presentation.dto.response.ContentUpdateResponse;
 import com.malgn.global.configure.CustomUser;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -50,7 +51,7 @@ public class ContentController {
 
     @PostMapping
     public ResponseEntity<ContentCreateResponse> createContent(
-        @RequestBody ContentCreateRequest req,
+        @RequestBody @Valid ContentCreateRequest req,
         @AuthenticationPrincipal CustomUser user
     ) {
         ContentCreateResponse res = contentService.createContent(req, user);
