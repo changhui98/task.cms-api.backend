@@ -1,10 +1,20 @@
 # CMS REST API
 
-도메인 중심 설계를 위해 DDD(Domain Driven Design) 4계층 아키텍처를 적용하였으며
-데이터 접근 계층에서는 JPA와 QueryDSL의 역할을 분리하여 유지보수성과 확장성을 고려했습니다.
+해당 프로젝트는 Spring Boot 기반 REST API 서버로, 사용자 인증을 포함한 간단한 콘텐츠 관리 기능을 구현한 백엔드 서비스입니다.
 
-또한 인증/인가 기능은 Spring Security + JWT 기반 인증 구조로 구현하였으며
-로그인 요청은 Controller가 아닌 Security Filter에서 처리하도록 설계했습니다.
+프로젝트 설계 과정에서 유지보수성과 확장성을 고려하여 DDD 기반 4계층 아키텍처를 적용하였으며,
+
+인증/인가에는 Spring Security 와 JWT 기반 토큰 인증 방식을 사용했습니다.
+
+또한 데이터 접근 계층에서는 JPA와 QueryDSL을 함께 사용하여 조회 로직을 구현하였습니다.
+
+**주요 목표**
+
+- Spring Boot 기반 REST API 설계
+- Spring Security + JWT 인증/인가 구조 구현
+- DDD 기반 4계층 아키텍처 적용
+- JPA + QueryDSL 을 활용한 데이터 조회 구조 설계
+- 콘텐츠 조회 성능 및 유지보수성을 고려한 Repository 구조 설계
 
 <br>
 
@@ -189,6 +199,13 @@ src/main/java
 - JWT 기반 Stateless 인증 방식을 사용합니다.
 - Spring Security 의 인증 흐름을 활용하기 위해 로그인 요청을 Controller가 아닌 Filter에서 처리하도록 설계했습니다.
 
+### JWT를 선택한 이유
+
+Jwt는 서버에 세션을 저장하지 않는 stateless 인증 방식이라 서버 확장에 유리하고, Authorization 헤더 기반으로 전달되기 때문에
+
+Rest API나 MSA 환경에서 서비스 간 인증 전달이 쉽다는 장점이 있어서 선택했습니다.
+
+
 ### 인증 API
 | 기능 | Method | Endpoint |
 | --- | --- | --- |
@@ -262,11 +279,11 @@ Authorization: Bearer {JWT}
 
 <br>
 
-# 📒 API Docs
+# 📒 API & PRD Docs
 
-```
-http://localhost:8080/swagger-ui/index.html
-```
+[API Docs Click Me !](https://github.com/changhui98/task.cms-api.backend/blob/main/docs/api-docs.md)
+
+
 
 <br>
 
