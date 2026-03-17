@@ -35,7 +35,7 @@ public class Content extends AuditingEntity {
     private Long viewCount = 0L;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     public static Content of(String title, String description, String username, Member member) {
