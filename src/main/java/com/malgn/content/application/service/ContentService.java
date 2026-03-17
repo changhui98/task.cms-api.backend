@@ -43,7 +43,7 @@ public class ContentService {
 
         Member member = findMember(user.getUsername());
 
-        Content content = Content.of(req.title(), req.description(), member.getUsername());
+        Content content = Content.of(req.title(), req.description(), member.getUsername(), member);
 
         Content saveContent = contentRepository.save(content);
 

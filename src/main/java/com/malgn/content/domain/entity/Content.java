@@ -1,11 +1,15 @@
 package com.malgn.content.domain.entity;
 
 import com.malgn.global.entity.AuditingEntity;
+import com.malgn.member.domain.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -30,10 +34,15 @@ public class Content extends AuditingEntity {
     @Column(name = "view_count", nullable = false)
     private Long viewCount = 0L;
 
-    public static Content of(String title, String description, String username) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    private Member member;
+
+    public static Content of(String title, String description, String username, Member member) {
         Content content = new Content();
         content.title = title;
         content.description = description;
+        content.member = member;
         content.createdBy = username;
         content.lastModifiedBy = username;
         return content;
