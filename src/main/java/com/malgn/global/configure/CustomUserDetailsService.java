@@ -23,6 +23,10 @@ public class CustomUserDetailsService implements UserDetailsService {
             () -> new AppException(MemberErrorCode.MEMBER_NOT_FOUND)
         );
 
+        if (member.isDeleted()) {
+            throw new AppException(MemberErrorCode.MEMBER_NOT_FOUND);
+        }
+
         return new CustomUser(
             member.getId(),
             member.getUsername(),
